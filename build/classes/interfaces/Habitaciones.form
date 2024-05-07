@@ -252,6 +252,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="jButton1"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditarActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnActualizar">
               <Properties>
@@ -267,7 +270,11 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/images/actualizar.png"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -318,18 +325,17 @@
                               </Group>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="sTipoHabitacion" min="-2" pref="596" max="-2" attributes="0"/>
+                                  <EmptySpace min="55" pref="55" max="-2" attributes="0"/>
+                                  <Component id="sNoCamas" min="-2" pref="270" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" attributes="0">
                                   <Component id="sPersonasP" min="-2" pref="270" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="144" max="-2" attributes="0"/>
-                                  <Component id="btnElminar" min="-2" pref="182" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="btnAgregar" min="-2" pref="633" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="sTipoHabitacion" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="55" pref="55" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btnAgregar" alignment="0" min="-2" pref="270" max="-2" attributes="0"/>
-                              <Component id="sNoCamas" alignment="1" min="-2" pref="270" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
@@ -351,7 +357,6 @@
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="txtDesc" pref="60" max="32767" attributes="0"/>
                               <Component id="btnAgregar" max="32767" attributes="0"/>
-                              <Component id="btnElminar" max="32767" attributes="0"/>
                               <Component id="sPersonasP" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
@@ -493,22 +498,6 @@
                   <AuxValues>
                     <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
                   </AuxValues>
-                </Component>
-                <Component class="javax.swing.JButton" name="btnElminar">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="33" green="0" red="cc" type="rgb"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Roboto" size="18" style="1"/>
-                    </Property>
-                    <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/images/eliminar.png"/>
-                    </Property>
-                  </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtPrecio">
                   <Properties>

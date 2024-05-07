@@ -16,7 +16,6 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import modelo.Conexion;
 
 /**
@@ -40,7 +39,7 @@ public final class RegHues extends javax.swing.JPanel {
         initComponents();
         AsignarNombres();
         reservas.VerRegistros();
-        RellenarCombo();
+       RellenarCombo();
     }
 
     /**
@@ -334,7 +333,7 @@ public final class RegHues extends javax.swing.JPanel {
                 
                 // Eliminar la habitación seleccionada del ComboBox
                 sHabitacion.removeItem(nombreHabitacion);
-                
+                 RellenarCombo();
                 // Actualizar los registros en la tabla dentro del otro JPanel
                 reservas.VerRegistros();
                 
@@ -370,6 +369,7 @@ public final class RegHues extends javax.swing.JPanel {
                     txtPrecio.setText(precio);
                 } else {
                     JOptionPane.showMessageDialog(null, "Habitacion inexistente");
+                    RellenarCombo();
                 }
             }
         } catch (SQLException ex) {
@@ -422,7 +422,6 @@ public final class RegHues extends javax.swing.JPanel {
             Statement st = conectar.createStatement();
             ResultSet rs = st.executeQuery(Queries.noRegistroHab);
             sHabitacion.removeAllItems();
-            //recorrer resultados y agregarlos al comboBox
             while (rs.next()) {
                 String habitacion = rs.getString("habitacion");
                 sHabitacion.addItem(habitacion);

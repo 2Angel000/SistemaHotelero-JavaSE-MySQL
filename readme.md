@@ -102,6 +102,30 @@ END;
 //
 DELIMITER ;
 
+-- Trigger para eliminar usuario después de eliminar empleado
+DELIMITER //
+CREATE TRIGGER after_delete_empleado 
+AFTER DELETE ON empleado 
+FOR EACH ROW 
+BEGIN 
+    -- Eliminar usuario correspondiente al empleado eliminado
+    DELETE FROM usuario WHERE empleado_id = OLD.id;
+END;
+//
+DELIMITER ;
+
+-- Trigger para eliminar usuario antes de eliminar empleado
+DELIMITER //
+
+CREATE TRIGGER before_delete_empleado 
+BEFORE DELETE ON empleado 
+FOR EACH ROW 
+BEGIN 
+    -- Eliminar usuario correspondiente al empleado que se va a eliminar
+    DELETE FROM usuario WHERE empleado_id = OLD.id;
+END;
+//
+DELIMITER ;
 
 
 
@@ -109,9 +133,9 @@ show tables;
 show triggers;
 
 -- Inserts para la tabla 'habitacion'
-INSERT INTO habitacion (habitacion, tipo_habitacion, no_camas, no_personas, precio, descripcion, estado)
-VALUES ('HB-1', 'Individual', 1, 1, '550', 'ninguna', 'Disponible'),
-       ('HB-2', 'Doble', 2, 2, '1000', 'vista al mar', 'Ocupada');
+INSERT INTO habitacion (habitacion, tipo_habitacion, no_camas, no_personas, precio, descripcion)
+VALUES ('HB-1', 'Individual','1', '1', '550', 'ninguna'),
+       ('HB-2', 'Doble', '2', '2', '1000', 'vista al mar');
 
 -- Inserts para la tabla 'registro'
 INSERT INTO registro (nombre, telefono, habitacion_id, precio, checkin, checkout) 
@@ -134,3 +158,17 @@ SELECT * FROM registro;
 SELECT * FROM solicitud;
 SELECT * FROM empleado;
 SELECT * FROM usuario;
+
+DROP DATABASE hotelDB;
+-- ALTER TABLE habitacion
+-- MODIFY COLUMN no_camas VARCHAR(3),
+-- MODIFY COLUMN no_personas VARCHAR(3),
+-- MODIFY COLUMN precio DOUBLE(10,2);
+
+-- ALTER TABLE registro
+-- DROP COLUMN precio;
+
+-- ALTER TABLE habitacion
+-- DROP COLUMN estado;
+
+

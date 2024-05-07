@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Conexion;
 
@@ -29,6 +30,7 @@ public class VerEmpleados extends javax.swing.JDialog {
     ResultSet rs;
     Conexion conn = new Conexion();
     Connection conectar = conn.getConnection();
+    Queries update = new Queries();
 
     /**
      * Creates new form VerEmpleados
@@ -167,12 +169,23 @@ public class VerEmpleados extends javax.swing.JDialog {
         btnEditar.setForeground(new java.awt.Color(255, 255, 255));
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editar.png"))); // NOI18N
         btnEditar.setText("jButton1");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnActualizar.setBackground(new java.awt.Color(102, 0, 153));
         btnActualizar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
         btnActualizar.setText("jButton2");
+        btnActualizar.setEnabled(false);
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         btnEmpleadoEstatus.setBackground(new java.awt.Color(102, 0, 51));
         btnEmpleadoEstatus.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
@@ -294,6 +307,51 @@ public class VerEmpleados extends javax.swing.JDialog {
         dispose();
     }//GEN-LAST:event_btnAtrasActionPerformed
 
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        btnEditar.setEnabled(false);
+        btnActualizar.setEnabled(true);
+        int renglon = TablaUsuarios.getSelectedRow();
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Oh-oh! Aviso", 0);
+        } else {
+            String usuario = (String) TablaUsuarios.getValueAt(renglon, 3);
+            String clave = (String) TablaUsuarios.getValueAt(renglon, 4);
+            try {
+                txtUsuario.setText(usuario);
+                txtClave.setText(clave);
+            } catch (Exception ex) {
+                Logger.getLogger(VerEmpleados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        btnActualizar.setEnabled(false);
+        btnEditar.setEnabled(true);
+        int renglon = TablaUsuarios.getSelectedRow();
+        String updateQuery;
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Oh-oh! Aviso", 0);
+        } else {
+            int id = Integer.parseInt((String) TablaUsuarios.getValueAt(renglon, 0));
+            try {
+            String usuario = txtUsuario.getText();
+            String clave = txtClave.getText();
+                if (txtUsuario.equals("") || txtClave.equals("")) {
+                    System.out.println("Debe tener datos");
+                } else {
+                    instruccion = conectar.createStatement();
+                    updateQuery = update.ActualizarUsuario(id, usuario, clave);
+                    instruccion.execute(updateQuery);
+                    Limpiar();
+                    MostrarUsuarios();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(VerEmpleados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -361,6 +419,7 @@ private void AsignarNombres() {
         btnActualizar.setText(Globales.actualizar);
         btnEmpleadoEstatus.setText(Globales.estatus);
         btnBuscar.setText(Globales.buscar);
+        lblEmpleados.setText(Globales.RegistroEmp);
     }
 
     private void Limpiar() {
@@ -380,7 +439,7 @@ private void AsignarNombres() {
         try {
             Statement st = conectar.createStatement();
             ResultSet rs2 = st.executeQuery(Queries.usuariosAll);
-            while(rs2.next()){
+            while (rs2.next()) {
                 datos[0] = rs2.getString("id");
                 datos[1] = rs2.getString("empleado_id");
                 datos[2] = rs2.getString("nombre");

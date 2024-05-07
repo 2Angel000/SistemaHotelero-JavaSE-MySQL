@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Conexion;
 
@@ -30,6 +31,7 @@ public class Empleados extends javax.swing.JDialog {
     Conexion conn = new Conexion();
     Connection conectar = conn.getConnection();
     Queries insert = new Queries();
+    Queries update = new Queries();
 
     /**
      * Creates new form Empleados
@@ -144,6 +146,11 @@ public class Empleados extends javax.swing.JDialog {
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editar.png"))); // NOI18N
         btnEditar.setText("jButton2");
         btnEditar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -191,6 +198,11 @@ public class Empleados extends javax.swing.JDialog {
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/eliminar.png"))); // NOI18N
         btnEliminar.setText("jButton1");
         btnEliminar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         btnAgregar.setBackground(new java.awt.Color(0, 153, 51));
         btnAgregar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
@@ -210,6 +222,12 @@ public class Empleados extends javax.swing.JDialog {
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
         btnActualizar.setText("jButton4");
         btnActualizar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        btnActualizar.setEnabled(false);
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -267,6 +285,11 @@ public class Empleados extends javax.swing.JDialog {
         ));
         TablaEmpleados.setRowHeight(20);
         TablaEmpleados.setSelectionBackground(new java.awt.Color(102, 153, 255));
+        TablaEmpleados.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TablaEmpleadosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(TablaEmpleados);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -342,7 +365,7 @@ public class Empleados extends javax.swing.JDialog {
             tipo = sTipoE.getItemAt(sTipoE.getSelectedIndex());//OK          
             insertQuery = insert.InsertEmpleado(nombre, apellido, telefono, tipo);
             instruccion = conectar.createStatement();
-            System.out.println("QUERY: "+insertQuery);
+            System.out.println("QUERY: " + insertQuery);
             instruccion.execute(insertQuery);
             VerEmpleados();
             Limpiar();
@@ -352,6 +375,93 @@ public class Empleados extends javax.swing.JDialog {
         }
 
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        int renglon = TablaEmpleados.getSelectedRow();
+        String insertQuery;
+        int eliminar;
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, "Selecciona un Registro", "Oh-oh!. AVISO", 0);
+        } else {
+            eliminar = JOptionPane.showConfirmDialog(null, Globales.confirmarDelete, Globales.eliminar, JOptionPane.YES_NO_OPTION);
+            if (eliminar == 0) {
+                int id = Integer.parseInt((String) TablaEmpleados.getValueAt(renglon, 0));
+                try {
+                    instruccion = conectar.createStatement();
+                    insertQuery = insert.BorrarEmpleado(id);
+                    instruccion.executeUpdate(insertQuery);
+                    JOptionPane.showMessageDialog(null, Globales.operacionExitosa, Globales.aviso, 1);
+                    VerEmpleados();
+                    conectar.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void TablaEmpleadosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TablaEmpleadosMouseClicked
+        int fila = TablaEmpleados.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion);
+        } else {
+            int id = Integer.parseInt((String) TablaEmpleados.getValueAt(fila, 0));
+            String usuario = (String) TablaEmpleados.getValueAt(fila, 3);
+            String clave = (String) TablaEmpleados.getValueAt(fila, 4);
+        }
+    }//GEN-LAST:event_TablaEmpleadosMouseClicked
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        btnEditar.setEnabled(false);
+        btnActualizar.setEnabled(true);
+        btnEliminar.setEnabled(false);
+        btnAgregar.setEnabled(false);
+        int renglon = TablaEmpleados.getSelectedRow();
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Aviso", 0);
+        } else {
+            String nombre = (String) TablaEmpleados.getValueAt(renglon, 1);
+            String apellido = (String) TablaEmpleados.getValueAt(renglon, 2);
+            String telefono = (String) TablaEmpleados.getValueAt(renglon, 3);
+            String tipo = (String) TablaEmpleados.getValueAt(renglon, 5);
+            try {
+                txtNombre.setText(nombre);
+                txtApellido.setText(apellido);
+                txtTelefono.setText(telefono);
+                sTipoE.setSelectedItem(tipo);
+            } catch (Exception e) {
+                System.out.println("Err:" + e);
+            }
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        btnActualizar.setEnabled(false);
+        btnEditar.setEnabled(true);
+        btnEliminar.setEnabled(true);
+        btnAgregar.setEnabled(true);
+        int renglon = TablaEmpleados.getSelectedRow();
+        String updateQuery;
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Oh, oh!", 0);
+        } else {
+            int id = Integer.parseInt((String) TablaEmpleados.getValueAt(renglon, 0));
+            try {
+                String nombre = txtNombre.getText();
+                String apellido = txtApellido.getText();
+                String telefono = txtTelefono.getText();
+                String tipo = (String) sTipoE.getSelectedItem();
+                instruccion = conectar.createStatement();
+                updateQuery = update.ActualizarEmpleado(id, nombre, apellido, telefono, tipo);
+                instruccion.execute(updateQuery);
+                instruccion.close();
+                Limpiar();
+                VerEmpleados();
+            } catch (SQLException ex) {
+                Logger.getLogger(Empleados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     /**
      * @param args the command line arguments

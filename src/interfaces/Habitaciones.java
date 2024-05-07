@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Conexion;
 
@@ -30,6 +31,7 @@ public final class Habitaciones extends javax.swing.JDialog {
     Conexion conn = new Conexion();
     Connection conectar = conn.getConnection();
     Queries insert = new Queries();
+    Queries update = new Queries();
     RegHues huespedes = new RegHues();
 
     public Habitaciones(java.awt.Frame parent, boolean modal) {
@@ -74,7 +76,6 @@ public final class Habitaciones extends javax.swing.JDialog {
         sNoCamas = new javax.swing.JComboBox<>();
         btnAgregar = new javax.swing.JButton();
         sPersonasP = new javax.swing.JComboBox<>();
-        btnElminar = new javax.swing.JButton();
         txtPrecio = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         TablaHabitacion = new javax.swing.JTable();
@@ -145,11 +146,22 @@ public final class Habitaciones extends javax.swing.JDialog {
         btnEditar.setForeground(new java.awt.Color(255, 255, 255));
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editar.png"))); // NOI18N
         btnEditar.setText("jButton1");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnActualizar.setBackground(new java.awt.Color(102, 0, 153));
         btnActualizar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
+        btnActualizar.setEnabled(false);
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -215,11 +227,6 @@ public final class Habitaciones extends javax.swing.JDialog {
         sPersonasP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2" }));
         sPersonasP.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)), "Personas Permitidas", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 1, 18))); // NOI18N
 
-        btnElminar.setBackground(new java.awt.Color(204, 0, 51));
-        btnElminar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btnElminar.setForeground(new java.awt.Color(255, 255, 255));
-        btnElminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/eliminar.png"))); // NOI18N
-
         txtPrecio.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtPrecio.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Precio", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 1, 16))); // NOI18N
 
@@ -236,16 +243,15 @@ public final class Habitaciones extends javax.swing.JDialog {
                         .addGap(18, 18, 18)
                         .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(sTipoHabitacion, javax.swing.GroupLayout.PREFERRED_SIZE, 596, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(55, 55, 55)
+                        .addComponent(sNoCamas, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(sPersonasP, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(144, 144, 144)
-                        .addComponent(btnElminar, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(sTipoHabitacion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(55, 55, 55)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sNoCamas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 633, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -262,7 +268,6 @@ public final class Habitaciones extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtDesc, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
                     .addComponent(btnAgregar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnElminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(sPersonasP))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -363,7 +368,6 @@ public final class Habitaciones extends javax.swing.JDialog {
             sTipoH = sTipoHabitacion.getItemAt(sTipoHabitacion.getSelectedIndex());
             insertQuery = insert.InsertHabitacion(habitacion, sTipoH, sCamas, sPersonas, precio, desc);
             instruccion = conectar.createStatement();
-            //System.out.println("QUERY: "+insertQuery);
             instruccion.execute(insertQuery);
             MostrarHabitacion();
             Limpiar();
@@ -395,6 +399,63 @@ public final class Habitaciones extends javax.swing.JDialog {
             sPersonasP.addItem("4");
         }
     }//GEN-LAST:event_sTipoHabitacionActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        btnEditar.setEnabled(false);
+        btnAgregar.setEnabled(false);
+        btnActualizar.setEnabled(true);
+        int renglon = TablaHabitacion.getSelectedRow();
+        if(renglon == -1){
+            JOptionPane.showMessageDialog(null, Globales.seleccion,"Aviso",0);
+        }else{
+            String habitacion = (String) TablaHabitacion.getValueAt(renglon, 1);
+            String tipo = (String) TablaHabitacion.getValueAt(renglon, 2);
+            String camas = (String) TablaHabitacion.getValueAt(renglon, 3);
+            String personas = (String) TablaHabitacion.getValueAt(renglon, 4);
+            String precio = (String) TablaHabitacion.getValueAt(renglon, 5);
+            String desc = (String) TablaHabitacion.getValueAt(renglon, 6);
+            try{
+               txtHabitacion.setText(habitacion);
+               sTipoHabitacion.setSelectedItem(tipo);
+               sNoCamas.setSelectedItem(camas);
+               sPersonasP.setSelectedItem(personas);
+               txtPrecio.setText(precio);
+               txtDesc.setText(desc);
+            }catch(Exception e){
+                System.out.println("Error => " + e);
+            }
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        btnActualizar.setEnabled(false);
+        btnEditar.setEnabled(true);
+        btnAgregar.setEnabled(true);
+        String updateQuery;
+         int renglon = TablaHabitacion.getSelectedRow();
+        if(renglon == -1){
+            JOptionPane.showMessageDialog(null, Globales.seleccion,"Aviso",0);
+        }else{
+            int id = Integer.parseInt((String) TablaHabitacion.getValueAt(renglon,0));
+            try{
+                String habitacion = txtHabitacion.getText();
+                String tipo = sTipoHabitacion.getItemAt(sTipoHabitacion.getSelectedIndex());
+                String camas = sNoCamas.getItemAt(sNoCamas.getSelectedIndex());
+                String personas = sPersonasP.getItemAt(sPersonasP.getSelectedIndex());
+                double precio = Double.parseDouble(txtPrecio.getText());
+                String desc = txtDesc.getText();
+                instruccion = conectar.createStatement();
+                updateQuery = update.ActualizarHabitacion(id, habitacion, tipo, camas, personas, precio, desc);
+                instruccion.execute(updateQuery);
+                instruccion.close();
+                Limpiar();
+                MostrarHabitacion();
+            }catch(SQLException ex){
+                Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE,null,ex);
+            }
+        }
+        
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -445,7 +506,6 @@ public final class Habitaciones extends javax.swing.JDialog {
     private javax.swing.JButton btnAtras;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
-    private javax.swing.JButton btnElminar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -469,7 +529,6 @@ public final class Habitaciones extends javax.swing.JDialog {
         btnAtras.setText(Globales.atras);
         btnActualizar.setText(Globales.actualizar);
         btnAgregar.setText(Globales.agregar);
-        btnElminar.setText(Globales.eliminar);
         btnEditar.setText(Globales.editar);
     }
 

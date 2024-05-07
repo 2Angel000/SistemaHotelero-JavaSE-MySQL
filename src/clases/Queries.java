@@ -52,4 +52,37 @@ public class Queries {
     String checkout = "DELETE FROM registro WHERE id ="+id;
     return checkout;
     }
+    
+    /*DELETE*/
+    public String BorrarHabitacion(int id) {
+    String delete = "DELETE FROM habitacion WHERE id ="+id;
+    return delete;
+    }
+    
+    public String BorrarEmpleado(int id) {
+    String delete = "DELETE FROM empleado WHERE id ="+id;
+    return delete;
+    }
+    
+    /*UPDATE*/
+    public String ActualizarUsuario(int id, String usuario, String clave){
+        String update = "UPDATE usuario SET usuario='"+usuario+"', clave = '"+clave+"' WHERE id="+id;
+        return update;
+    }
+    
+    public String ActualizarEmpleado(int id, String nombre, String apellido, String telefono, String tipo){
+        String update = "UPDATE empleado SET nombre='"+nombre+"', apellido='"+apellido+"', telefono='"+telefono+"', tipo_empleado = '"+tipo+"' WHERE id="+id;
+        return update;
+    }
+    
+    public String ActualizarSolicitud(int id, String servicio, String area, String desc, String estado){
+        String update = "UPDATE solicitud SET servicio='"+servicio+"', area='"+area+"', descripcion='"+desc+"', estado='"+estado+"' WHERE id="+id;
+        return update;
+    }
+    
+    public String ActualizarHabitacion(int id, String habitacion, String tipoH, String camas, String personas, double precio, String desc){
+        String update = "UPDATE habitacion SET habitacion='"+habitacion+"', tipo_habitacion='"+tipoH+"',no_camas='"+camas+"',no_personas='"+personas+"', precio="+precio+", descripcion='"+desc+"' WHERE id="+id;
+        return update;
+    }
+    
 }

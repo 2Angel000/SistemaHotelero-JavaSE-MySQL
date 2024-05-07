@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelo.Conexion;
 
@@ -23,13 +24,13 @@ import modelo.Conexion;
  * @author mcsmo
  */
 public class Solicitudes extends javax.swing.JDialog {
-    
+
     PreparedStatement ps, pst;
     Statement instruccion;
     ResultSet rs;
     Conexion conn = new Conexion();
     Connection conectar = conn.getConnection();
-    Queries insert = new Queries();
+    Queries insert, update = new Queries();
 
     /**
      * Creates new form Solicitudes
@@ -44,7 +45,7 @@ public class Solicitudes extends javax.swing.JDialog {
         AsignarNombres();
         VerSolicitudes();
     }
-    
+
     public void MaximizarJDialog() {
         this.setSize(this.getToolkit().getScreenSize());
     }
@@ -198,11 +199,22 @@ public class Solicitudes extends javax.swing.JDialog {
         btnEditar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         btnEditar.setForeground(new java.awt.Color(255, 255, 255));
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editar.png"))); // NOI18N
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnActualizar.setBackground(new java.awt.Color(102, 0, 153));
         btnActualizar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         btnActualizar.setForeground(new java.awt.Color(255, 255, 255));
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/actualizar.png"))); // NOI18N
+        btnActualizar.setEnabled(false);
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setBackground(new java.awt.Color(204, 0, 51));
         btnEliminar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
@@ -344,7 +356,7 @@ public class Solicitudes extends javax.swing.JDialog {
     }//GEN-LAST:event_sServicioActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        try{
+        try {
             String insertQuery, servicio, area, estado;
             String desc = txtDescripcion.getText();
             servicio = sServicio.getItemAt(sServicio.getSelectedIndex());
@@ -356,10 +368,61 @@ public class Solicitudes extends javax.swing.JDialog {
             VerSolicitudes();
             Limpiar();
             conectar.close();
-        }catch(SQLException ex){
-            Logger.getLogger(Solicitudes.class.getName()).log(Level.SEVERE,null,ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Solicitudes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        btnEditar.setEnabled(false);
+        btnActualizar.setEnabled(true);
+        btnEliminar.setEnabled(false);
+        btnAgregar.setEnabled(false);
+        int renglon = TablaSolicitudes.getSelectedRow();
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Aviso", 0);
+        } else {
+            String servicio = (String) TablaSolicitudes.getValueAt(renglon, 2);
+            String area = (String) TablaSolicitudes.getValueAt(renglon, 3);
+            String descripcion = (String) TablaSolicitudes.getValueAt(renglon, 4);
+            String estado = (String) TablaSolicitudes.getValueAt(renglon, 5);
+            try {
+                sServicio.setSelectedItem(servicio);
+                sArea.setSelectedItem(area);
+                txtDescripcion.setText(descripcion);
+                sEstado.setSelectedItem(estado);
+            } catch (Exception e) {
+                System.out.println("ERR - > " + e);
+            }
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        btnActualizar.setEnabled(false);
+        btnEditar.setEnabled(true);
+        btnEliminar.setEnabled(true);
+        btnAgregar.setEnabled(true);
+        int renglon = TablaSolicitudes.getSelectedRow();
+        String updateQuery;
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Oh-oh! Aviso", 0);
+        } else {
+            int id = Integer.parseInt((String) TablaSolicitudes.getValueAt(renglon, 0));
+            try {
+                String servicio = sServicio.getItemAt(sServicio.getSelectedIndex());
+                String area = sArea.getItemAt(sArea.getSelectedIndex());
+                String descripcion = txtDescripcion.getText();
+                String estado = sEstado.getItemAt(sEstado.getSelectedIndex());
+                instruccion = conectar.createStatement();
+                updateQuery = update.ActualizarSolicitud(id, servicio, area, descripcion, estado);
+                instruccion.execute(updateQuery);
+                Limpiar();
+                VerSolicitudes();
+            } catch (SQLException ex) {
+                Logger.getLogger(Solicitudes.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -429,13 +492,13 @@ private void AsignarNombres() {
         lblSolicitudes.setText(Globales.SolicitudMant);
         btnBuscar.setText(Globales.buscar);
         btnAtras.setText(Globales.atras);
-        
+
         btnAgregar.setText(Globales.agregar);
         btnEliminar.setText(Globales.eliminar);
         btnEditar.setText(Globales.editar);
         btnActualizar.setText(Globales.actualizar);
     }
-    
+
     private void Limpiar() {
         txtDescripcion.setText("");
     }
@@ -468,5 +531,5 @@ private void AsignarNombres() {
         }
     }
     //
-    
+
 }
