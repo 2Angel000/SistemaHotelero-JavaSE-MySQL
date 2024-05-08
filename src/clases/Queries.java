@@ -26,14 +26,14 @@ public class Queries {
     public static String getInfoHabitacion = "SELECT tipo_habitacion, no_camas, no_personas, precio FROM habitacion where habitacion = ?";
     public static String habitacionesRegistradas = "SELECT habitacion_id FROM registro";
 
- /*INSERTS*/
+    /*INSERTS*/
     public String InsertEmpleado(String nombre, String apellido, String telefono, String tipoEmpleado) {
         String insert = "INSERT INTO empleado (nombre, apellido, telefono, registro, tipo_empleado) VALUES ('" + nombre + "', '" + apellido + "','" + telefono + "','" + Componentes.FechaActualDB() + "','" + tipoEmpleado + "')";
         return insert;
     }
 
     public String InsertHabitacion(String habitacion, String tipoH, int camas, int personas, Double precio, String desc) {
-        String insert = "INSERT INTO habitacion (habitacion, tipo_habitacion, no_camas, no_personas, precio, descripcion) VALUES ('" + habitacion + "', '" + tipoH + "','" + camas + "','" + personas + "'," + precio + ",'" + desc +"')";
+        String insert = "INSERT INTO habitacion (habitacion, tipo_habitacion, no_camas, no_personas, precio, descripcion) VALUES ('" + habitacion + "', '" + tipoH + "','" + camas + "','" + personas + "'," + precio + ",'" + desc + "')";
         return insert;
     }
 
@@ -49,40 +49,69 @@ public class Queries {
 
     /*CHECK-OUT*/
     public String CheckOut(int id) {
-    String checkout = "DELETE FROM registro WHERE id ="+id;
-    return checkout;
+        String checkout = "DELETE FROM registro WHERE id =" + id;
+        return checkout;
     }
-    
+
     /*DELETE*/
     public String BorrarHabitacion(int id) {
-    String delete = "DELETE FROM habitacion WHERE id ="+id;
-    return delete;
+        String delete = "DELETE FROM habitacion WHERE id =" + id;
+        return delete;
     }
-    
+
     public String BorrarEmpleado(int id) {
-    String delete = "DELETE FROM empleado WHERE id ="+id;
-    return delete;
+        String delete = "DELETE FROM empleado WHERE id =" + id;
+        return delete;
     }
-    
+
     /*UPDATE*/
-    public String ActualizarUsuario(int id, String usuario, String clave){
-        String update = "UPDATE usuario SET usuario='"+usuario+"', clave = '"+clave+"' WHERE id="+id;
+    public String ActualizarUsuario(int id, String usuario, String clave) {
+        String update = "UPDATE usuario SET usuario='" + usuario + "', clave = '" + clave + "' WHERE id=" + id;
         return update;
     }
-    
-    public String ActualizarEmpleado(int id, String nombre, String apellido, String telefono, String tipo){
-        String update = "UPDATE empleado SET nombre='"+nombre+"', apellido='"+apellido+"', telefono='"+telefono+"', tipo_empleado = '"+tipo+"' WHERE id="+id;
+
+    public String ActualizarEmpleado(int id, String nombre, String apellido, String telefono, String tipo) {
+        String update = "UPDATE empleado SET nombre='" + nombre + "', apellido='" + apellido + "', telefono='" + telefono + "', tipo_empleado = '" + tipo + "' WHERE id=" + id;
         return update;
     }
-    
-    public String ActualizarSolicitud(int id, String servicio, String area, String desc, String estado){
-        String update = "UPDATE solicitud SET servicio='"+servicio+"', area='"+area+"', descripcion='"+desc+"', estado='"+estado+"' WHERE id="+id;
+
+    public String ActualizarSolicitud(int id, String servicio, String area, String desc, String estado) {
+        String update = "UPDATE solicitud SET servicio='" + servicio + "', area='" + area + "', descripcion='" + desc + "', estado='" + estado + "' WHERE id=" + id;
         return update;
     }
-    
-    public String ActualizarHabitacion(int id, String habitacion, String tipoH, String camas, String personas, double precio, String desc){
-        String update = "UPDATE habitacion SET habitacion='"+habitacion+"', tipo_habitacion='"+tipoH+"',no_camas='"+camas+"',no_personas='"+personas+"', precio="+precio+", descripcion='"+desc+"' WHERE id="+id;
+
+    public String ActualizarHabitacion(int id, String habitacion, String tipoH, String camas, String personas, double precio, String desc) {
+        String update = "UPDATE habitacion SET habitacion='" + habitacion + "', tipo_habitacion='" + tipoH + "',no_camas='" + camas + "',no_personas='" + personas + "', precio=" + precio + ", descripcion='" + desc + "' WHERE id=" + id;
         return update;
     }
-    
+
+    /*SEARCH*/
+    public String BuscarHabitacion(int id) {
+        String find = "SELECT usuario.id, usuario.empleado_id, empleado.nombre, usuario.usuario, usuario.clave FROM usuario INNER JOIN empleado ON empleado.id = usuario.empleado_id WHERE usuario.id=" + id;
+        return find;
+    }
+
+    public String BuscarHuesped(int id) {
+        String find = "SELECT registro.id, registro.nombre, registro.telefono, habitacion.habitacion, registro.checkin, registro.checkout FROM registro INNER JOIN habitacion ON habitacion.id = registro.habitacion_id WHERE registro.id=" + id;
+        return find;
+    }
+
+    public String Buscar(int id, String tabla) {
+        String find = "SELECT * FROM " + tabla + " WHERE id=" + id;
+        return find;
+    }
+
+    /*USERS*/
+    public String auth(String usuario, String clave) {
+        String sql = "SELECT * FROM usuario WHERE usuario='" + usuario + "' and clave='" + clave + "'";
+        return sql;
+    }
+
+    public String ID(String usuario, String clave, String id) {
+        String sql = "SELECT u.id, LEFT(u.usuario, 2) AS prefix, e.nombre AS nombre_usuario, u.clave as clave FROM usuario u JOIN empleado e ON u.empleado_id = e.id WHERE u.id = "+id;
+        return sql;
+    }
+
+    public static String rol = "SELECT LEFT(u.usuario, 2) AS prefix, e.nombre AS nombre_usuario, u.clave as clave FROM usuario u JOIN empleado e ON u.empleado_id = e.id";
+    public static String usuarioActual = "SELECT u.id, LEFT(u.usuario, 2) AS prefix, e.nombre AS nombre_usuario, u.clave as clave FROM usuario u JOIN empleado e ON u.empleado_id = e.id where u.id=e.";
 }

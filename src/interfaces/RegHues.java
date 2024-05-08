@@ -8,6 +8,8 @@ package interfaces;
 import clases.Componentes;
 import clases.Globales;
 import clases.Queries;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -63,8 +65,8 @@ public final class RegHues extends javax.swing.JPanel {
         txtCheckIn = new javax.swing.JTextField();
         txtCheckOut = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        txtDesde = new javax.swing.JTextField();
+        txtHasta = new javax.swing.JTextField();
         lblNNoches = new javax.swing.JLabel();
         btnEnviar = new javax.swing.JButton();
         txtTelefono = new javax.swing.JTextField();
@@ -96,6 +98,11 @@ public final class RegHues extends javax.swing.JPanel {
         txtNombre.setBackground(new java.awt.Color(255, 255, 255));
         txtNombre.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtNombre.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Nombre", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP, new java.awt.Font("Roboto", 0, 18))); // NOI18N
+        txtNombre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombreKeyTyped(evt);
+            }
+        });
 
         sHabitacion.setBackground(new java.awt.Color(255, 255, 255));
         sHabitacion.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
@@ -132,14 +139,19 @@ public final class RegHues extends javax.swing.JPanel {
 
         txtCheckOut.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtCheckOut.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Check-Out (AAAA-MM-DD)", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 18))); // NOI18N
+        txtCheckOut.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCheckOutKeyTyped(evt);
+            }
+        });
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTextField1.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Desde", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 18))); // NOI18N
+        txtDesde.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        txtDesde.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Desde", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 18))); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
-        jTextField2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Hasta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 18))); // NOI18N
+        txtHasta.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
+        txtHasta.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Hasta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 18))); // NOI18N
 
         lblNNoches.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
         lblNNoches.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -151,8 +163,8 @@ public final class RegHues extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-                    .addComponent(jTextField1)
+                    .addComponent(txtHasta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                    .addComponent(txtDesde)
                     .addComponent(lblNNoches, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -162,9 +174,9 @@ public final class RegHues extends javax.swing.JPanel {
                 .addGap(7, 7, 7)
                 .addComponent(lblNNoches, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -183,6 +195,11 @@ public final class RegHues extends javax.swing.JPanel {
         txtTelefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtTelefonoActionPerformed(evt);
+            }
+        });
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyTyped(evt);
             }
         });
 
@@ -264,7 +281,7 @@ public final class RegHues extends javax.swing.JPanel {
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(70, 70, 70)
                 .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -288,13 +305,13 @@ public final class RegHues extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(lblRegistrarHuespedes, javax.swing.GroupLayout.PREFERRED_SIZE, 829, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 534, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1484, Short.MAX_VALUE)))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 1339, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -304,7 +321,7 @@ public final class RegHues extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -343,6 +360,7 @@ public final class RegHues extends javax.swing.JPanel {
             }
         }
         //conectar.close();
+        txtHasta.setText(checkout);
         } catch (SQLException ex) {
             Logger.getLogger(RegHues.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -377,6 +395,44 @@ public final class RegHues extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_sHabitacionActionPerformed
 
+    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
+        int key = evt.getKeyChar();
+        boolean numerico = key >= 48 && key<=57;
+        
+        if(!numerico){
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
+        
+        if(txtTelefono.getText().trim().length() == 10){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtTelefonoKeyTyped
+
+    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
+        if(txtNombre.getText().length() >= 50){
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtNombreKeyTyped
+
+    private void txtCheckOutKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCheckOutKeyTyped
+      char c = evt.getKeyChar();
+    if (!((c >= '0' && c <= '9') || c == '-' || c == KeyEvent.VK_BACK_SPACE)) {
+        evt.consume(); // Consume el evento para evitar que se ingrese el carácter
+        Toolkit.getDefaultToolkit().beep(); // Emite un sonido de advertencia
+    }
+
+    // Verifica la longitud del texto para controlar el formato
+    int length = txtCheckOut.getText().length();
+    if (length == 4 || length == 7) {
+        if (c != '-') {
+            evt.consume(); // Consume el evento si no se ingresa un guion en las posiciones adecuadas
+        }
+    } else if (length >= 10) {
+        evt.consume(); // Limita la longitud del texto a 10 caracteres (yyyy-mm-dd)
+    }
+    }//GEN-LAST:event_txtCheckOutKeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEnviar;
@@ -385,13 +441,13 @@ public final class RegHues extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lblNNoches;
     private javax.swing.JLabel lblRegistrarHuespedes;
     private javax.swing.JComboBox<String> sHabitacion;
     private javax.swing.JTextField txtCheckIn;
     private javax.swing.JTextField txtCheckOut;
+    private javax.swing.JTextField txtDesde;
+    private javax.swing.JTextField txtHasta;
     private javax.swing.JTextField txtNoCamas;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPersonasP;
@@ -405,6 +461,9 @@ public final class RegHues extends javax.swing.JPanel {
         lblNNoches.setText(Globales.nNoches);
         btnEnviar.setText(Globales.enviar);
         txtCheckIn.setText(Componentes.FechaActual());
+        txtDesde.setText(Componentes.FechaActual());
+        txtDesde.setEnabled(false);
+        txtHasta.setEnabled(false);
     }
 
     private void Limpiar() {

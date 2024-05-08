@@ -7,6 +7,7 @@ package interfaces;
 
 import clases.Globales;
 import clases.Queries;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,6 +32,7 @@ public class VerEmpleados extends javax.swing.JDialog {
     Conexion conn = new Conexion();
     Connection conectar = conn.getConnection();
     Queries update = new Queries();
+    Queries buscar = new Queries();
 
     /**
      * Creates new form VerEmpleados
@@ -66,7 +68,7 @@ public class VerEmpleados extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         txtBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JToggleButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         txtUsuario = new javax.swing.JTextField();
@@ -125,13 +127,21 @@ public class VerEmpleados extends javax.swing.JDialog {
 
         txtBuscar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         txtBuscar.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Buscar ID:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 14))); // NOI18N
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyTyped(evt);
+            }
+        });
 
         btnBuscar.setBackground(new java.awt.Color(0, 102, 153));
         btnBuscar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/buscar.png"))); // NOI18N
-        btnBuscar.setText("jButton1");
-        btnBuscar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -140,17 +150,17 @@ public class VerEmpleados extends javax.swing.JDialog {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 1066, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtBuscar))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtBuscar)
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -158,6 +168,7 @@ public class VerEmpleados extends javax.swing.JDialog {
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
 
+        txtUsuario.setEditable(false);
         txtUsuario.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtUsuario.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Cambiar Usuario", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 1, 16))); // NOI18N
 
@@ -206,7 +217,7 @@ public class VerEmpleados extends javax.swing.JDialog {
                 .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
                 .addComponent(btnEmpleadoEstatus, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -335,8 +346,8 @@ public class VerEmpleados extends javax.swing.JDialog {
         } else {
             int id = Integer.parseInt((String) TablaUsuarios.getValueAt(renglon, 0));
             try {
-            String usuario = txtUsuario.getText();
-            String clave = txtClave.getText();
+                String usuario = txtUsuario.getText();
+                String clave = txtClave.getText();
                 if (txtUsuario.equals("") || txtClave.equals("")) {
                     System.out.println("Debe tener datos");
                 } else {
@@ -351,6 +362,55 @@ public class VerEmpleados extends javax.swing.JDialog {
             }
         }
     }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        if (btnBuscar.isSelected() == true) {
+            int id = Integer.parseInt(txtBuscar.getText());
+            String busqueda;
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("id");
+            model.addColumn("empleado_id");
+            model.addColumn("nombre");
+            model.addColumn("usuario");
+            model.addColumn("clave");
+            TablaUsuarios.setModel(model);
+            String[] datos = new String[5];
+            try {
+                Statement st = conectar.createStatement();
+                busqueda = buscar.BuscarHabitacion(id);
+                System.out.println("Query" + busqueda);
+                ResultSet rs2 = st.executeQuery(busqueda);
+                while (rs2.next()) {
+                    datos[0] = rs2.getString("id");
+                    datos[1] = rs2.getString("empleado_id");
+                    datos[2] = rs2.getString("nombre");
+                    datos[3] = rs2.getString("usuario");
+                    datos[4] = rs2.getString("clave");
+                    model.addRow(datos);
+                }
+                TablaUsuarios.setModel(model);
+            } catch (SQLException ex) {
+                Logger.getLogger(VerEmpleados.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            MostrarUsuarios();
+        }
+        txtBuscar.setText("");
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
+        int key = evt.getKeyChar();
+        boolean numerico = key >= 48 && key <= 57;
+
+        if (!numerico) {
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
+
+        if (txtBuscar.getText().trim().length() == 3) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtBuscarKeyTyped
 
     /**
      * @param args the command line arguments
@@ -398,7 +458,7 @@ public class VerEmpleados extends javax.swing.JDialog {
     private javax.swing.JTable TablaUsuarios;
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAtras;
-    private javax.swing.JButton btnBuscar;
+    private javax.swing.JToggleButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEmpleadoEstatus;
     private javax.swing.JPanel jPanel1;

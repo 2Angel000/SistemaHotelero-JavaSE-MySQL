@@ -6,11 +6,20 @@
 package interfaces;
 
 import clases.Componentes;
+import clases.Enviroment;
 import clases.Frames;
 import clases.Globales;
+import clases.Queries;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -23,10 +32,11 @@ public final class Dashboard extends javax.swing.JFrame {
     /**
      * Creates new form Dashboard
      */
+    Queries id = new Queries();
     HabDisp p1 = new HabDisp();
     RegHues p2 = new RegHues();
     Reservas p3 = new Reservas();
-    
+
     public Dashboard() {
         initComponents();
         AsignarNombres();
@@ -36,6 +46,7 @@ public final class Dashboard extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         showPanel(p1);
         btnHabiDisp.setEnabled(false);
+        //Roles();
     }
 
     private void showPanel(JPanel p) {
@@ -253,7 +264,6 @@ public final class Dashboard extends javax.swing.JFrame {
         lblSaludo.setForeground(new java.awt.Color(0, 51, 102));
         lblSaludo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSaludo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/hola.png"))); // NOI18N
-        lblSaludo.setText("jLabel3");
 
         lblFecha.setFont(new java.awt.Font("Roboto", 1, 28)); // NOI18N
         lblFecha.setForeground(new java.awt.Color(0, 0, 0));
@@ -407,22 +417,22 @@ public final class Dashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReservasActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-       Frames.CerrarSesion();
-       this.dispose();
+        Frames.CerrarSesion();
+        this.dispose();
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnHabitacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHabitacionesActionPerformed
-        Habitaciones habitaciones = new Habitaciones(this,true);
+        Habitaciones habitaciones = new Habitaciones(this, true);
         habitaciones.setVisible(true);
     }//GEN-LAST:event_btnHabitacionesActionPerformed
 
     private void btnHospedajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHospedajeActionPerformed
-        Huespedes huespedes = new Huespedes(this,true);
+        Huespedes huespedes = new Huespedes(this, true);
         huespedes.setVisible(true);
     }//GEN-LAST:event_btnHospedajeActionPerformed
 
     private void btnEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmpleadoActionPerformed
-        SeleccionEmpleados empleados = new SeleccionEmpleados(this,true);
+        SeleccionEmpleados empleados = new SeleccionEmpleados(this, true);
         empleados.setVisible(true);
     }//GEN-LAST:event_btnEmpleadoActionPerformed
 
@@ -499,12 +509,65 @@ public final class Dashboard extends javax.swing.JFrame {
         btnSolicitud.setText(Globales.SolicitudMant);
         btnEmpleado.setText(Globales.RegistroEmp);
         btnExit.setText(Globales.CerrarSesion);
-        lblSaludo.setText(Globales.nombreUsuario + "Marcelo");
         lblFecha.setText("Fecha: " + Componentes.FechaActual());
         lblHora.setText(Componentes.HoraActual());
         btnHabiDisp.setText(Globales.HabDisp);
         btnRegHuesp.setText(Globales.RegHues);
         btnReservas.setText(Globales.Reservaciones);
+    }
+
+    public void Roles() {
+        try (Connection conn = DriverManager.getConnection(Enviroment.url, Enviroment.user, Enviroment.pass);
+                PreparedStatement stmt = conn.prepareStatement(Queries.usuarioActual);
+                ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                String id = rs.getString("id");
+                String prefix = rs.getString("prefix");
+                String usuario = rs.getString("nombre_usuario");
+                String clave = rs.getString("clave");
+                lblSaludo.setText("Hola, " + usuario + " clave" + clave);
+                System.out.println(id+"\n"+prefix+"\n"+usuario+"\n"+clave);
+                switch (prefix) {
+                    case "RE":
+                        btnSolicitud.setEnabled(false);
+                        btnEmpleado.setEnabled(false);
+                        break;
+                    case "RH":
+                        btnHabiDisp.setEnabled(false);
+                        btnHospedaje.setEnabled(false);
+                        btnReservas.setEnabled(false);
+                        btnRegHuesp.setEnabled(false);
+                        btnSolicitud.setEnabled(false);
+                        btnHabitaciones.setEnabled(false);
+                        break;
+                    case "GE":
+                        btnEmpleado.setEnabled(true);
+                        btnHabiDisp.setEnabled(true);
+                        btnHabitaciones.setEnabled(true);
+                        btnHospedaje.setEnabled(true);
+                        btnRegHuesp.setEnabled(true);
+                        btnReservas.setEnabled(true);
+                        btnSolicitud.setEnabled(true);
+                        break;
+                    case "MU":
+                    case "MA":
+                    case "GU":
+                    case "IN":
+                        btnHabiDisp.setEnabled(false);
+                        btnHospedaje.setEnabled(false);
+                        btnReservas.setEnabled(false);
+                        btnRegHuesp.setEnabled(false);
+                        btnEmpleado.setEnabled(false);
+                        btnHabitaciones.setEnabled(false);
+                        break;
+                    default:
+                        lblSaludo.setText("Hola :D");
+                        break;
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Dashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     class FondoPanel extends JPanel {

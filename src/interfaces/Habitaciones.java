@@ -7,6 +7,7 @@ package interfaces;
 
 import clases.Globales;
 import clases.Queries;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,6 +33,7 @@ public final class Habitaciones extends javax.swing.JDialog {
     Connection conectar = conn.getConnection();
     Queries insert = new Queries();
     Queries update = new Queries();
+    Queries buscar = new Queries();
     RegHues huespedes = new RegHues();
 
     public Habitaciones(java.awt.Frame parent, boolean modal) {
@@ -65,9 +67,9 @@ public final class Habitaciones extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         txtBuscar = new javax.swing.JTextField();
-        btnBuscar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
+        btnBuscar = new javax.swing.JToggleButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         txtHabitacion = new javax.swing.JTextField();
@@ -133,13 +135,16 @@ public final class Habitaciones extends javax.swing.JDialog {
 
         txtBuscar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
         txtBuscar.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Buscar ID:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 0, 14))); // NOI18N
-
-        btnBuscar.setBackground(new java.awt.Color(0, 102, 153));
-        btnBuscar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
-        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/buscar.png"))); // NOI18N
-        btnBuscar.setText("jButton1");
-        btnBuscar.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 0, new java.awt.Color(0, 0, 0)));
+        txtBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBuscarActionPerformed(evt);
+            }
+        });
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyTyped(evt);
+            }
+        });
 
         btnEditar.setBackground(new java.awt.Color(0, 51, 102));
         btnEditar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
@@ -163,6 +168,16 @@ public final class Habitaciones extends javax.swing.JDialog {
             }
         });
 
+        btnBuscar.setBackground(new java.awt.Color(0, 102, 153));
+        btnBuscar.setFont(new java.awt.Font("Roboto", 1, 18)); // NOI18N
+        btnBuscar.setForeground(new java.awt.Color(255, 255, 255));
+        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/buscar.png"))); // NOI18N
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -171,11 +186,11 @@ public final class Habitaciones extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 891, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -186,7 +201,7 @@ public final class Habitaciones extends javax.swing.JDialog {
                     .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txtBuscar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
                     .addComponent(btnEditar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnBuscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -196,6 +211,11 @@ public final class Habitaciones extends javax.swing.JDialog {
 
         txtHabitacion.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtHabitacion.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Nombre de Habitación", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 1, 16))); // NOI18N
+        txtHabitacion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtHabitacionKeyTyped(evt);
+            }
+        });
 
         txtDesc.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtDesc.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Descripción", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 1, 16))); // NOI18N
@@ -229,6 +249,11 @@ public final class Habitaciones extends javax.swing.JDialog {
 
         txtPrecio.setFont(new java.awt.Font("Roboto", 0, 14)); // NOI18N
         txtPrecio.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)), "Precio", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Roboto", 1, 16))); // NOI18N
+        txtPrecio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtPrecioKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -357,24 +382,26 @@ public final class Habitaciones extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAtrasActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        try {
-            String sTipoH, insertQuery;
-            int sCamas, sPersonas;
-            String habitacion = txtHabitacion.getText();
-            String desc = txtDesc.getText();
-            double precio = Double.parseDouble(txtPrecio.getText());
-            sCamas = Integer.parseInt(sNoCamas.getItemAt(sNoCamas.getSelectedIndex()));
-            sPersonas = Integer.parseInt(sPersonasP.getItemAt(sPersonasP.getSelectedIndex()));
-            sTipoH = sTipoHabitacion.getItemAt(sTipoHabitacion.getSelectedIndex());
-            insertQuery = insert.InsertHabitacion(habitacion, sTipoH, sCamas, sPersonas, precio, desc);
-            instruccion = conectar.createStatement();
-            instruccion.execute(insertQuery);
-            MostrarHabitacion();
-            Limpiar();
-            huespedes.RellenarCombo();
-            conectar.close();
-        } catch (SQLException ex) {
-            Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE, null, ex);
+        if (!(Vacios() == true)) {
+            try {
+                String sTipoH, insertQuery;
+                int sCamas, sPersonas;
+                String habitacion = txtHabitacion.getText();
+                String desc = txtDesc.getText();
+                double precio = Double.parseDouble(txtPrecio.getText());
+                sCamas = Integer.parseInt(sNoCamas.getItemAt(sNoCamas.getSelectedIndex()));
+                sPersonas = Integer.parseInt(sPersonasP.getItemAt(sPersonasP.getSelectedIndex()));
+                sTipoH = sTipoHabitacion.getItemAt(sTipoHabitacion.getSelectedIndex());
+                insertQuery = insert.InsertHabitacion(habitacion, sTipoH, sCamas, sPersonas, precio, desc);
+                instruccion = conectar.createStatement();
+                instruccion.execute(insertQuery);
+                MostrarHabitacion();
+                Limpiar();
+                huespedes.RellenarCombo();
+                conectar.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -382,7 +409,7 @@ public final class Habitaciones extends javax.swing.JDialog {
         int selectIndex = sTipoHabitacion.getSelectedIndex();
         sNoCamas.removeAllItems();
         sPersonasP.removeAllItems();
-        if (selectIndex == 0) { 
+        if (selectIndex == 0) {
             sPersonasP.addItem("1");
             sPersonasP.addItem("2");
             sNoCamas.addItem("1");
@@ -405,23 +432,23 @@ public final class Habitaciones extends javax.swing.JDialog {
         btnAgregar.setEnabled(false);
         btnActualizar.setEnabled(true);
         int renglon = TablaHabitacion.getSelectedRow();
-        if(renglon == -1){
-            JOptionPane.showMessageDialog(null, Globales.seleccion,"Aviso",0);
-        }else{
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Aviso", 0);
+        } else {
             String habitacion = (String) TablaHabitacion.getValueAt(renglon, 1);
             String tipo = (String) TablaHabitacion.getValueAt(renglon, 2);
             String camas = (String) TablaHabitacion.getValueAt(renglon, 3);
             String personas = (String) TablaHabitacion.getValueAt(renglon, 4);
             String precio = (String) TablaHabitacion.getValueAt(renglon, 5);
             String desc = (String) TablaHabitacion.getValueAt(renglon, 6);
-            try{
-               txtHabitacion.setText(habitacion);
-               sTipoHabitacion.setSelectedItem(tipo);
-               sNoCamas.setSelectedItem(camas);
-               sPersonasP.setSelectedItem(personas);
-               txtPrecio.setText(precio);
-               txtDesc.setText(desc);
-            }catch(Exception e){
+            try {
+                txtHabitacion.setText(habitacion);
+                sTipoHabitacion.setSelectedItem(tipo);
+                sNoCamas.setSelectedItem(camas);
+                sPersonasP.setSelectedItem(personas);
+                txtPrecio.setText(precio);
+                txtDesc.setText(desc);
+            } catch (Exception e) {
                 System.out.println("Error => " + e);
             }
         }
@@ -432,12 +459,12 @@ public final class Habitaciones extends javax.swing.JDialog {
         btnEditar.setEnabled(true);
         btnAgregar.setEnabled(true);
         String updateQuery;
-         int renglon = TablaHabitacion.getSelectedRow();
-        if(renglon == -1){
-            JOptionPane.showMessageDialog(null, Globales.seleccion,"Aviso",0);
-        }else{
-            int id = Integer.parseInt((String) TablaHabitacion.getValueAt(renglon,0));
-            try{
+        int renglon = TablaHabitacion.getSelectedRow();
+        if (renglon == -1) {
+            JOptionPane.showMessageDialog(null, Globales.seleccion, "Aviso", 0);
+        } else {
+            int id = Integer.parseInt((String) TablaHabitacion.getValueAt(renglon, 0));
+            try {
                 String habitacion = txtHabitacion.getText();
                 String tipo = sTipoHabitacion.getItemAt(sTipoHabitacion.getSelectedIndex());
                 String camas = sNoCamas.getItemAt(sNoCamas.getSelectedIndex());
@@ -450,12 +477,87 @@ public final class Habitaciones extends javax.swing.JDialog {
                 instruccion.close();
                 Limpiar();
                 MostrarHabitacion();
-            }catch(SQLException ex){
-                Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE,null,ex);
+            } catch (SQLException ex) {
+                Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }//GEN-LAST:event_btnActualizarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        if (btnBuscar.isSelected() == true) {
+            int id = Integer.parseInt(txtBuscar.getText());
+            DefaultTableModel modelo = new DefaultTableModel();
+            modelo.addColumn("id");
+            modelo.addColumn("habitacion");
+            modelo.addColumn("tipo_habitacion");
+            modelo.addColumn("no_camas");
+            modelo.addColumn("no_personas");
+            modelo.addColumn("precio");
+            modelo.addColumn("descripcion");
+            TablaHabitacion.setModel(modelo);
+            String[] datos = new String[7];
+            try {
+                Statement st = conectar.createStatement();
+                String busqueda = buscar.Buscar(id, "habitacion");
+                ResultSet rs2 = st.executeQuery(busqueda);
+                while (rs2.next()) {
+                    datos[0] = rs2.getString("id");
+                    datos[1] = rs2.getString("habitacion");
+                    datos[2] = rs2.getString("tipo_habitacion");
+                    datos[3] = rs2.getString("no_camas");
+                    datos[4] = rs2.getString("no_personas");
+                    datos[5] = rs2.getString("precio");
+                    datos[6] = rs2.getString("descripcion");
+                    modelo.addRow(datos);
+                }
+                TablaHabitacion.setModel(modelo);
+            } catch (SQLException ex) {
+                Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            MostrarHabitacion();
+        }
+        txtBuscar.setText("");
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtBuscarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyTyped
+        int key = evt.getKeyChar();
+        boolean numerico = key >= 48 && key <= 57;
+
+        if (!numerico) {
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
+
+        if (txtBuscar.getText().trim().length() == 3) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtBuscarKeyTyped
+
+    private void txtHabitacionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtHabitacionKeyTyped
+        if (txtHabitacion.getText().length() == 6) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtHabitacionKeyTyped
+
+    private void txtPrecioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPrecioKeyTyped
+        int key = evt.getKeyChar();
+        boolean numerico = key >= 48 && key <= 57;
+
+        if (!numerico) {
+            evt.consume();
+            Toolkit.getDefaultToolkit().beep();
+        }
+
+        if (txtPrecio.getText().trim().length() == 7) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txtPrecioKeyTyped
+
+    private void txtBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -504,7 +606,7 @@ public final class Habitaciones extends javax.swing.JDialog {
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnAtras;
-    private javax.swing.JButton btnBuscar;
+    private javax.swing.JToggleButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -538,6 +640,15 @@ public final class Habitaciones extends javax.swing.JDialog {
         txtDesc.setText("");
     }
 
+    public Boolean Vacios() {
+        if (txtHabitacion.getText().isEmpty() || txtPrecio.getText().isEmpty() || txtDesc.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Todos los cuadros NO deben estár vacíos.");
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void MostrarHabitacion() {
         DefaultTableModel modelo = new DefaultTableModel();
         modelo.addColumn("id");
@@ -567,4 +678,5 @@ public final class Habitaciones extends javax.swing.JDialog {
             Logger.getLogger(Habitaciones.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
 }

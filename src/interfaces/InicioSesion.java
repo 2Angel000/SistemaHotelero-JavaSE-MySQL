@@ -7,10 +7,20 @@ package interfaces;
 
 import clases.Frames;
 import clases.Globales;
+import clases.Queries;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import modelo.Conexion;
 
 /**
  *
@@ -18,19 +28,25 @@ import javax.swing.JPanel;
  */
 public class InicioSesion extends javax.swing.JFrame {
 
+    PreparedStatement ps;
+    Statement instruccion;
+    ResultSet rs;
+    Conexion conn = new Conexion();
+    Connection conectar = conn.getConnection();
+    Queries auth = new Queries();
     /**
      * Creates new form InicioSesion
      */
-    
+
     FondoPanel2 fondo = new FondoPanel2();
     FondoPanel3 fondo3 = new FondoPanel3();
-    
+
     public InicioSesion() {
         this.setContentPane(fondo3);
         initComponents();
         this.setExtendedState(InicioSesion.MAXIMIZED_BOTH);
         setTitle(Globales.nombreSistema);
-       setIconImage(new ImageIcon(getClass().getResource("/images/selloHotel.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/images/selloHotel.png")).getImage());
         this.setLocationRelativeTo(null);
     }
 
@@ -47,7 +63,7 @@ public class InicioSesion extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtClave = new javax.swing.JTextField();
+        txtUsuario = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnEntrar = new javax.swing.JButton();
         txtContra = new javax.swing.JPasswordField();
@@ -75,9 +91,14 @@ public class InicioSesion extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Clave de trabajador");
 
-        txtClave.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
-        txtClave.setForeground(new java.awt.Color(0, 0, 0));
-        txtClave.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtUsuario.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
+        txtUsuario.setForeground(new java.awt.Color(0, 0, 0));
+        txtUsuario.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        txtUsuario.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtUsuarioKeyTyped(evt);
+            }
+        });
 
         jLabel6.setFont(new java.awt.Font("Roboto", 0, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 0, 0));
@@ -118,10 +139,9 @@ public class InicioSesion extends javax.swing.JFrame {
                 .addGap(63, 63, 63)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtContra, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtClave, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtUsuario)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(btnEntrar, javax.swing.GroupLayout.PREFERRED_SIZE, 386, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -136,7 +156,7 @@ public class InicioSesion extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtClave, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -176,12 +196,29 @@ public class InicioSesion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        Frames.abrirHome();
-        this.dispose(); 
+        String usuario = txtUsuario.getText();
+        String contra = String.valueOf(txtContra.getPassword());
+        try {
+            instruccion = conectar.createStatement();
+            String inicioS = auth.auth(usuario, contra);
+            rs = instruccion.executeQuery(inicioS);
+            if (rs.next()) {
+                Frames.abrirHome();
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(null, "No tiene Autorización para este sistema", "Seguridad", 0);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(InicioSesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnEntrarActionPerformed
 
     private void btnEntrarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnEntrarMouseClicked
     }//GEN-LAST:event_btnEntrarMouseClicked
+
+    private void txtUsuarioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsuarioKeyTyped
+        
+    }//GEN-LAST:event_txtUsuarioKeyTyped
 
     /**
      * @param args the command line arguments
@@ -226,35 +263,36 @@ public class InicioSesion extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JTextField txtClave;
     private javax.swing.JPasswordField txtContra;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 
-    class FondoPanel2 extends JPanel{
+    class FondoPanel2 extends JPanel {
+
         private Image img;
-        
+
         @Override
-        public void paint (Graphics g){
+        public void paint(Graphics g) {
             img = new ImageIcon(getClass().getResource("/images/fondo_hotel.png")).getImage();
-            g.drawImage(img,0,0,getWidth(),getHeight(), this);
+            g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
             setOpaque(false);
             super.paint(g);
         }
-        
+
     }
-    
-        class FondoPanel3 extends JPanel{
+
+    class FondoPanel3 extends JPanel {
+
         private Image img;
-        
+
         @Override
-        public void paint (Graphics g){
+        public void paint(Graphics g) {
             img = new ImageIcon(getClass().getResource("/images/login.jpg")).getImage();
-            g.drawImage(img,0,0,getWidth(),getHeight(), this);
+            g.drawImage(img, 0, 0, getWidth(), getHeight(), this);
             setOpaque(false);
             super.paint(g);
         }
-        
+
     }
-        
-    
+
 }
